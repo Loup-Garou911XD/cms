@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block title %}Find Available Classrooms{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Find Available Classrooms</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5>Search Criteria</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('find_available_classrooms') }}">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="day_id" class="form-label">Day</label>
+                        <select class="form-control" id="day_id" name="day_id" required>
+                            <option value="">Select a day</option>
+                            {% for day in days %}
+                            <option value="{{ day.day_id }}">{{ day.day_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="slot_id" class="form-label">Time Slot</label>
+                        <select class="form-control" id="slot_id" name="slot_id" required>
+                            <option value="">Select a time slot</option>
+                            {% for slot in time_slots %}
+                            <option value="{{ slot.slot_id }}">{{ slot.slot_name }} ({{ slot.start_time }} - {{ slot.end_time }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="capacity" class="form-label">Minimum Capacity</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" min="1" value="30">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Room Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_lab" name="is_lab">
+                            <label class="form-check-label" for="is_lab">
+                                Laboratory Required
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Find Available Classrooms
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5>Search Tips</h5>
+        </div>
+        <div class="card-body">
+            <ul>
+                <li>Select a specific day and time slot to find classrooms available during that period.</li>
+                <li>Use the capacity field to ensure the classroom can accommodate your class size.</li>
+                <li>Check the "Laboratory Required" option if you need specialized equipment.</li>
+                <li>Results will show all classrooms matching your criteria that aren't already booked.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

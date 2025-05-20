@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+{% block title %}Usage Reports{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Usage Reports and Analytics</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5>Classroom Usage</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="classroomUsageChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5>Faculty Teaching Load</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="facultyLoadChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5>Booking Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="bookingTrendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fetch classroom usage data and create chart
+    fetch('/api/classroom_usage')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('classroomUsageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(item => item.classroom),
+                    datasets: [{
+                        label: 'Number of Bookings',
+                        data: data.map(item => item.booking_count),
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Bookings'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Classroom'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    
+    // Fetch faculty load data and create chart
+    fetch('/api/faculty_load')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('facultyLoadChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(item => item.faculty_name),
+                    datasets: [{
+                        label: 'Number of Classes',
+                        data: data.map(item => item.class_count),
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Classes'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Faculty Member'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    
+    // Placeholder for booking trends chart
+    const trendsCtx = document.getElementById('bookingTrendsChart').getContext('2d');
+    new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Bookings per Month',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

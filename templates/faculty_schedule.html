@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}Faculty Schedule{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Faculty Teaching Schedule</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Select Faculty Member</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="{{ url_for('faculty_schedule') }}">
+                <div class="form-group">
+                    <label for="faculty_id">Faculty Member:</label>
+                    <select class="form-control" id="faculty_id" name="faculty_id" onchange="this.form.submit()">
+                        <option value="">Select a faculty member</option>
+                        {% for faculty in faculty_list %}
+                        <option value="{{ faculty.faculty_id }}" {% if selected_faculty == faculty.faculty_id %}selected{% endif %}>
+                            {{ faculty.full_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if faculty_name %}
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5>Schedule for {{ faculty_name }}</h5>
+        </div>
+        <div class="card-body">
+            {% if schedule %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Course</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for class in schedule %}
+                    <tr>
+                        <td>{{ class.day_name }}</td>
+                        <td>{{ class.slot_name }} ({{ class.start_time }} - {{ class.end_time }})</td>
+                        <td>{{ class.course_code }} - {{ class.course_name }}</td>
+                        <td>{{ class.room_number }} ({{ class.building_name }})</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="alert alert-info">No classes scheduled for this faculty member.</div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

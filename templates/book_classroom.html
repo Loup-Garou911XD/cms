@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block title %}Book Classroom{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Book a Classroom</h2>
+  
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
+  <form method="post" action="{{ url_for('book_classroom') }}" class="mt-4">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="classroom_id" class="form-label">Classroom:</label>
+          <select name="classroom_id" id="classroom_id" class="form-select" required>
+            <option value="">-- Select Classroom --</option>
+            {% for classroom in classrooms %}
+              <option value="{{ classroom.classroom_id }}">{{ classroom.classroom_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group mb-3">
+          <label for="faculty_id" class="form-label">Faculty:</label>
+          <select name="faculty_id" id="faculty_id" class="form-select" required>
+            <option value="">-- Select Faculty --</option>
+            {% for f in faculty %}
+              <option value="{{ f.faculty_id }}">{{ f.faculty_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group mb-3">
+          <label for="course_id" class="form-label">Course:</label>
+          <select name="course_id" id="course_id" class="form-select" required>
+            <option value="">-- Select Course --</option>
+            {% for course in courses %}
+              <option value="{{ course.course_id }}">{{ course.course_title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="day_id" class="form-label">Day:</label>
+          <select name="day_id" id="day_id" class="form-select" required>
+            <option value="">-- Select Day --</option>
+            {% for day in days %}
+              <option value="{{ day.day_id }}">{{ day.day_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group mb-3">
+          <label for="slot_id" class="form-label">Time Slot:</label>
+          <select name="slot_id" id="slot_id" class="form-select" required>
+            <option value="">-- Select Time Slot --</option>
+            {% for slot in time_slots %}
+              <option value="{{ slot.slot_id }}">{{ slot.time_slot }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <label for="semester" class="form-label">Semester:</label>
+              <select name="semester" id="semester" class="form-select" required>
+                <option value="">-- Select Semester --</option>
+                <option value="Spring">Spring</option>
+                <option value="Summer">Summer</option>
+                <option value="Fall">Fall</option>
+                <option value="Winter">Winter</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="form-group mb-3">
+              <label for="academic_year" class="form-label">Academic Year:</label>
+              <select name="academic_year" id="academic_year" class="form-select" required>
+                <option value="">-- Select Year --</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <a href="{{ url_for('bookings') }}" class="btn btn-secondary me-md-2">Cancel</a>
+      <button type="submit" class="btn btn-primary">Book Classroom</button>
+    </div>
+  </form>
+  
+  <div class="mt-4 alert alert-info">
+    <h5>Booking Guidelines:</h5>
+    <ul>
+      <li>Check classroom availability before booking</li>
+      <li>Faculty cannot be booked for multiple classes at the same time</li>
+      <li>Classrooms are booked for the entire semester</li>
+      <li>For special one-time bookings, please contact the administration</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}
